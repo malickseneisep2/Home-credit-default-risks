@@ -217,11 +217,11 @@ if st.session_state.predicted:
         r1, r2 = st.columns(2)
         
         with r1:
-            # 1. Bar chart Scores Externes (Beaucoup plus lisible que radar)
+            # 1. Bar chart Scores Externes
             st.markdown("##### 📊 Scores Externes (vs Moyenne)")
             fig_ext = go.Figure(data=[
-                go.Bar(name='Client', x=['Ext_1', 'Ext_2', 'Ext_3'], y=[ext_1, ext_2, ext_3], marker_color='#1e3c72'),
-                go.Bar(name='Moyenne', x=['Ext_1', 'Ext_2', 'Ext_3'], y=[0.5, 0.5, 0.5], marker_color='#cbd5e0')
+                go.Bar(name='Client', x=['Ext_1', 'Ext_2', 'Ext_3'], y=[ext_1, ext_2, ext_3], marker_color='#1e3c72', text=[f"{ext_1:.2f}", f"{ext_2:.2f}", f"{ext_3:.2f}"], textposition='auto'),
+                go.Bar(name='Moyenne', x=['Ext_1', 'Ext_2', 'Ext_3'], y=[0.502, 0.514, 0.511], marker_color='#cbd5e0', text=["0.502", "0.514", "0.511"], textposition='auto')
             ])
             fig_ext.update_layout(barmode='group', height=300, margin=dict(t=20, b=20, l=20, r=20))
             st.plotly_chart(fig_ext, width="stretch")
@@ -241,16 +241,18 @@ if st.session_state.predicted:
             # 3. Ancienneté Professionnelle
             st.markdown("##### 💼 Ancienneté (Années)")
             years = abs(days_employed) / 365
-            fig_exp = px.bar(x=['Client', 'Moyenne Globale'], y=[years, 6.0], color=['Client', 'Moyenne Globale'], color_discrete_map={'Client':'#1e3c72', 'Moyenne Globale':'#cbd5e0'})
+            avg_years = abs(-2384) / 365
+            fig_exp = px.bar(x=['Client', 'Moyenne Globale'], y=[years, avg_years], color=['Client', 'Moyenne Globale'], color_discrete_map={'Client':'#1e3c72', 'Moyenne Globale':'#cbd5e0'})
             fig_exp.update_layout(showlegend=False, height=300, margin=dict(t=20, b=20))
             st.plotly_chart(fig_exp, width="stretch")
 
             # 4. Charge de remboursement
             st.markdown("##### 💳 Ratio Annuité / Crédit")
             ratio = amt_annuity / amt_credit if amt_credit > 0 else 0
+            avg_ratio = 0.0537
             fig_ratio = go.Figure(go.Indicator(
                 mode = "number+delta", value = ratio*100,
-                delta = {'reference': 5, 'relative': False, 'valueformat': ".1f"},
+                delta = {'reference': avg_ratio*100, 'relative': False, 'valueformat': ".1f"},
                 number = {'suffix': "%"}, title = {"text": "Taux de charge"},
             ))
             fig_ratio.update_layout(height=250)
