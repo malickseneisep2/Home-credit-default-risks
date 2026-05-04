@@ -112,27 +112,14 @@ async def predict(application: CreditApplication):
         # Proba
         proba = classifier.predict_proba(X_transformed)[0, 1]
         
-        # SHAP (Optimisé pour Render RAM)
-        explainer = shap.TreeExplainer(classifier)
-        # check_additivity=False réduit la charge CPU/RAM
-        shap_values = explainer.shap_values(X_transformed, check_additivity=False)
+        # --- DIAGNOSTIC : SHAP DÉSACTIVÉ POUR TESTER LA RAM ---
+        # explainer = shap.TreeExplainer(classifier)
+        # shap_values = explainer.shap_values(X_transformed, check_additivity=False)
+        # contribs = shap_values[1][0] if isinstance(shap_values, list) else shap_values[0]
         
-        # Gestion des sorties SHAP (LGBM peut renvoyer une liste ou un array)
-        if isinstance(shap_values, list):
-            # On prend les contributions pour la classe 1 (risque)
-            contribs = shap_values[1][0] if len(shap_values) > 1 else shap_values[0][0]
-        else:
-            # Si c'est un seul array, on prend la ligne correspondante
-            contribs = shap_values[0] if len(shap_values.shape) > 1 else shap_values
-
-        # Get feature names
-        try:
-            feature_names = preprocessor.get_feature_names_out()
-        except:
-            # Fallback for older sklearn
-            feature_names = [f"feature_{i}" for i in range(X_transformed.shape[1])]
-            
-        feat_importances = dict(zip(feature_names, [float(c) for c in contribs]))
+        # On renvoie des valeurs vides pour le moment
+        feature_names = preprocessor.get_feature_names_out()
+        feat_importances = {name: 0.0 for name in feature_names[:10]} 
         
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Prediction error: {e}")
