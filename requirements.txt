@@ -9,8 +9,8 @@ pydantic
 pytest
 httpx
 streamlit
-plotly
+plotly==5.24.1
 requests
 shap
 matplotlib
-# force rebuild 1
+# force rebuild 2
