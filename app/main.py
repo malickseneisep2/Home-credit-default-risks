@@ -23,11 +23,19 @@ app.add_middleware(
 
 # Constants
 OPTIMAL_THRESHOLD = 0.673
-MODEL_PATH = "model.joblib"
+
+import os
+# Chemin absolu vers le dossier racine du projet
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+MODEL_PATH = os.path.join(BASE_DIR, "model.joblib")
 
 # Load model
 try:
-    model = joblib.load(MODEL_PATH)
+    if os.path.exists(MODEL_PATH):
+        model = joblib.load(MODEL_PATH)
+    else:
+        print(f"Warning: Model not found at {MODEL_PATH}")
+        model = None
 except Exception as e:
     print(f"Warning: Model not found at {MODEL_PATH}. Prediction route will fail until export_model.py is run.")
     model = None
