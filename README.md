@@ -3,8 +3,8 @@
 Ce projet propose un système expert complet pour le scoring crédit, conçu pour aider les institutions bancaires à évaluer le risque de défaut de paiement de manière transparente et automatisée.
 
 ## 🌐 Déploiement en ligne
-- **Dashboard Décisionnel** : [Lien Streamlit Cloud](https://votre-app.streamlit.app) (À mettre à jour après votre déploiement Streamlit)
-- **API Backend (FastAPI)** : [https://home-credit-default-risks.onrender.com/docs](https://home-credit-default-risks.onrender.com/docs)
+- **Dashboard Décisionnel** : [Lien Streamlit Cloud](https://home-credit-default-risks-asyxt6eswrrslne8e9x3p.streamlit.app)
+- **API Backend (FastAPI)** : [https://home-credit-default-risks-1.onrender.com/docs](https://home-credit-default-risks-1.onrender.com/docs)
 - **CI/CD Status** : GitHub Actions est configuré pour valider chaque modification.
 
 ## 🚀 Fonctionnalités Clés
