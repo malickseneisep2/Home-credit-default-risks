@@ -276,6 +276,6 @@ else:
     
     st.markdown("---")
     c_a, c_b, c_c = st.columns(3)
-    c_a.metric("Modèle", "LightGBM v4")
+    c_a.metric("Modèle", "LightGBM")
     c_b.metric("Variables", "20 indicateurs")
     c_c.metric("Seuil", "0.673")
