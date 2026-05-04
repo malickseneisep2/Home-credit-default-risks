@@ -1,65 +1,41 @@
-# 🏠 Home Credit Default Risk - Scoring System
+# 🏠 Home Credit Default Risk - Decision Support System
 
-This project provides a complete machine learning pipeline and a FastAPI service to predict credit default risk for Home Credit.
+Ce projet propose un système expert complet pour le scoring crédit, conçu pour aider les institutions bancaires à évaluer le risque de défaut de paiement de manière transparente et automatisée.
 
 ## 🌐 Déploiement en ligne
-- **Dashboard Streamlit** : [Lien vers le dashboard](https://votre-app.streamlit.app)
-- **API Backend (FastAPI)** : [Lien vers l'API](https://votre-api.onrender.com/docs)
+- **Dashboard Décisionnel** : [Lien Streamlit Cloud](https://votre-app.streamlit.app) (À mettre à jour après votre déploiement Streamlit)
+- **API Backend (FastAPI)** : [https://home-credit-default-risks.onrender.com/docs](https://home-credit-default-risks.onrender.com/docs)
+- **CI/CD Status** : GitHub Actions est configuré pour valider chaque modification.
 
-## 🚀 Overview
-The system uses a **LightGBM** classifier trained on historical data to predict the probability of a client encountering payment difficulties.
+## 🚀 Fonctionnalités Clés
+- **Scoring en temps réel** : Prédiction de probabilité via un modèle **LightGBM** optimisé.
+- **Explicabilité (SHAP)** : Analyse détaillée des facteurs influençant chaque décision (transparence totale).
+- **Dashboard Professionnel** : Interface Streamlit avec 3 onglets (Décision, SHAP, Profil Détaillé).
+- **Seuil Métier Optimisé** : Utilisation d'un seuil de **0.673** pour équilibrer le taux d'approbation et le risque.
 
-Key features:
-- **Scikit-learn Pipeline**: Includes automated preprocessing (imputation, scaling, encoding).
-- **FastAPI API**: Production-ready endpoint for real-time scoring.
-- **Optimized Threshold**: Uses a business-weighted threshold (**0.673**) to balance approval rate and risk.
-- **CI/CD**: Integrated GitHub Actions for automated testing.
+## 📁 Structure du Projet
+- `app/` : Logique de l'API FastAPI et schémas Pydantic.
+- `app.py` : Dashboard interactif Streamlit.
+- `notebooks/` : Travaux d'exploration (EDA) et de modélisation.
+- `tests/` : Suite de tests unitaires automatisés.
+- `export_model.py` : Script d'entraînement et d'export du pipeline complet.
 
-## 📁 Project Structure
-- `app/`: FastAPI application code.
-- `Data/`: Raw and processed datasets (ignored by git).
-- `notebooks/`: Exploratory Data Analysis and modeling experiments.
-- `tests/`: Unit tests for the API.
-- `export_model.py`: Script to train and export the final pipeline.
+## 🛠️ Utilisation Locale
 
-## 🛠️ Installation
-
-1. Clone the repository:
-   ```bash
-   git clone <your-repo-url>
-   cd home-credit-default-risk
-   ```
-
-2. Install dependencies:
+1. **Installation** :
    ```bash
    pip install -r requirements.txt
    ```
 
-3. Train the model:
+2. **Lancer l'API** :
    ```bash
-   python export_model.py
+   uvicorn app.main:app --reload
    ```
 
-## 🖥️ Usage
+3. **Lancer le Dashboard** :
+   ```bash
+   streamlit run app.py
+   ```
 
-### Run the API locally
-```bash
-uvicorn app.main:app --reload
-```
-The API will be available at `http://127.0.0.1:8000`. You can access the interactive documentation at `/docs`.
-
-### Run the Dashboard (Streamlit)
-Make sure the API is running, then in another terminal:
-```bash
-streamlit run app.py
-```
-
-### Run Tests
-```bash
-pytest
-```
-
-## 📊 Business Logic
-The model outputs a probability. Based on business requirements, we use a threshold of **0.673**:
-- Probability $\ge$ 0.673 $\rightarrow$ **Refusal** (High Risk)
-- Probability $<$ 0.673 $\rightarrow$ **Approval** (Low Risk)
+---
+*Projet réalisé dans le cadre du module Machine Learning 2 - ISE2.*
