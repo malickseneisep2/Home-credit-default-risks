@@ -2,6 +2,10 @@
 
 This project provides a complete machine learning pipeline and a FastAPI service to predict credit default risk for Home Credit.
 
+## 🌐 Déploiement en ligne
+- **Dashboard Streamlit** : [Lien vers le dashboard](https://votre-app.streamlit.app)
+- **API Backend (FastAPI)** : [Lien vers l'API](https://votre-api.onrender.com/docs)
+
 ## 🚀 Overview
 The system uses a **LightGBM** classifier trained on historical data to predict the probability of a client encountering payment difficulties.
 

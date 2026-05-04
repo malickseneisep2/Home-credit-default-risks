@@ -11,8 +11,10 @@ st.set_page_config(
     page_title="Home Credit - Credit Scoring Dashboard",
     page_icon="🏦",
     layout="wide",
-    initial_sidebar_state="expanded",
-)
+# --- CONFIGURATION DE L'API ---
+# Remplacez cette URL par votre URL Render une fois déployé
+API_URL = "https://votre-api-credit.onrender.com" 
+# API_URL = "http://127.0.0.1:8000" # Décommentez pour tester en local
 
 # --- INITIALISATION DU SESSION STATE ---
 if 'predicted' not in st.session_state:
@@ -93,7 +95,7 @@ with st.sidebar:
 
     # Statut API
     try:
-        api_check = requests.get("http://127.0.0.1:8000/health", timeout=3)
+        api_check = requests.get(f"{API_URL}/health", timeout=5)
         if api_check.status_code == 200:
             st.success("✅ Système Connecté")
         else:
@@ -147,7 +149,7 @@ payload = {
 if not st.session_state.predicted and 'predict_btn' in locals() and predict_btn:
     try:
         with st.spinner("🔄 Analyse du risque..."):
-            response = requests.post("http://127.0.0.1:8000/predict", json=payload)
+            response = requests.post(f"{API_URL}/predict", json=payload)
         if response.status_code == 200:
             st.session_state.api_data = response.json()
             st.session_state.predicted = True
