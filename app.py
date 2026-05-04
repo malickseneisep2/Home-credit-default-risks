@@ -98,7 +98,7 @@ with st.sidebar:
 
     # Statut API
     try:
-        api_check = requests.get(f"{API_URL}/health", timeout=5)
+        api_check = requests.get(f"{API_URL}/health", timeout=15)
         if api_check.status_code == 200:
             st.success("✅ Système Connecté")
         else:
