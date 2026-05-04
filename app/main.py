@@ -112,17 +112,18 @@ async def predict(application: CreditApplication):
         # Proba
         proba = classifier.predict_proba(X_transformed)[0, 1]
         
-        # SHAP
+        # SHAP (Optimisé pour Render RAM)
         explainer = shap.TreeExplainer(classifier)
-        shap_values = explainer.shap_values(X_transformed)
+        # check_additivity=False réduit la charge CPU/RAM
+        shap_values = explainer.shap_values(X_transformed, check_additivity=False)
         
-        # LightGBM binary returns a list [neg_contrib, pos_contrib] or just pos_contrib depending on version
-        # Usually it's [proba_0, proba_1] contributions
+        # Gestion des sorties SHAP (LGBM peut renvoyer une liste ou un array)
         if isinstance(shap_values, list):
-            contribs = shap_values[1][0] # Contribution for class 1, first (and only) sample
+            # On prend les contributions pour la classe 1 (risque)
+            contribs = shap_values[1][0] if len(shap_values) > 1 else shap_values[0][0]
         else:
-            # For newer shap/lgbm, it might be just the positive class
-            contribs = shap_values[0] if len(shap_values.shape) == 2 else shap_values
+            # Si c'est un seul array, on prend la ligne correspondante
+            contribs = shap_values[0] if len(shap_values.shape) > 1 else shap_values
 
         # Get feature names
         try:
