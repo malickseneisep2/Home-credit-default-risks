@@ -112,14 +112,22 @@ async def predict(application: CreditApplication):
         # Proba
         proba = classifier.predict_proba(X_transformed)[0, 1]
         
-        # --- DIAGNOSTIC : SHAP DÉSACTIVÉ POUR TESTER LA RAM ---
-        # explainer = shap.TreeExplainer(classifier)
-        # shap_values = explainer.shap_values(X_transformed, check_additivity=False)
-        # contribs = shap_values[1][0] if isinstance(shap_values, list) else shap_values[0]
+        # --- SHAP (Restauré) ---
+        explainer = shap.TreeExplainer(classifier)
+        shap_values = explainer.shap_values(X_transformed, check_additivity=False)
         
-        # On renvoie des valeurs vides pour le moment
-        feature_names = preprocessor.get_feature_names_out()
-        feat_importances = {name: 0.0 for name in feature_names[:10]} 
+        if isinstance(shap_values, list):
+            contribs = shap_values[1][0] if len(shap_values) > 1 else shap_values[0][0]
+        else:
+            contribs = shap_values[0] if len(shap_values.shape) > 1 else shap_values
+
+        # Get feature names
+        try:
+            feature_names = preprocessor.get_feature_names_out()
+        except:
+            feature_names = [f"feature_{i}" for i in range(X_transformed.shape[1])]
+            
+        feat_importances = dict(zip(feature_names, [float(c) for c in contribs]))
         
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Prediction error: {e}")

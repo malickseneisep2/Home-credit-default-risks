@@ -8,12 +8,10 @@ venv/
 ENV/
 env/
 
-# Data & Models (Heavy files)
+# Data (Heavy files)
 Data/
-model.joblib
 *.csv
-*.joblib
-*.pkl
+# model.joblib is now tracked for deployment
 
 # IDEs
 .vscode/
