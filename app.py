@@ -11,6 +11,9 @@ st.set_page_config(
     page_title="Home Credit - Credit Scoring Dashboard",
     page_icon="🏦",
     layout="wide",
+    initial_sidebar_state="expanded",
+)
+
 # --- CONFIGURATION DE L'API ---
 # Remplacez cette URL par votre URL Render une fois déployé
 API_URL = "https://home-credit-default-risks.onrender.com" 
