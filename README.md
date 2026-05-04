@@ -4,7 +4,7 @@ Ce projet propose un système expert complet pour le scoring crédit, conçu pou
 
 ## 🌐 Déploiement en ligne
 - **Dashboard Décisionnel** : [Lien dashboard](https://credit-scoring-dashboard.onrender.com/)
-- **API Backend (FastAPI)** : [lien API](https://home-credit-default-risks-1.onrender.com/docs)
+- **API Backend (FastAPI)** : [Lien API](https://home-credit-default-risks-1.onrender.com/docs)
 - **CI/CD Status** : GitHub Actions est configuré pour valider chaque modification.
 
 ## 🚀 Fonctionnalités Clés
