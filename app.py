@@ -13,7 +13,7 @@ st.set_page_config(
     layout="wide",
 # --- CONFIGURATION DE L'API ---
 # Remplacez cette URL par votre URL Render une fois déployé
-API_URL = "https://votre-api-credit.onrender.com" 
+API_URL = "https://home-credit-default-risks.onrender.com" 
 # API_URL = "http://127.0.0.1:8000" # Décommentez pour tester en local
 
 # --- INITIALISATION DU SESSION STATE ---
