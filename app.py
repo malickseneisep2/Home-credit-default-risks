@@ -213,9 +213,9 @@ if st.session_state.predicted:
             pos = [(k, v) for k, v in sorted_shap.items() if v > 0][:3]
             neg = [(k, v) for k, v in sorted_shap.items() if v < 0][:3]
             st.markdown("**⚠️ Augmentent le risque :**")
-            for k, v in pos: st.markdown(f'<div class="impact-box negative-impact">⬆️ <b>{k}</b> ({v:+.3f})</div>', unsafe_allow_html=True)
+            for k, v in pos: st.markdown(f'<div class="impact-box negative-impact">⬆️ <b>{k}</b> : augmente le risque de {v:.3f}</div>', unsafe_allow_html=True)
             st.markdown("**✅ Sécurisent le dossier :**")
-            for k, v in neg: st.markdown(f'<div class="impact-box positive-impact">⬇️ <b>{k}</b> ({v:+.3f})</div>', unsafe_allow_html=True)
+            for k, v in neg: st.markdown(f'<div class="impact-box positive-impact">⬇️ <b>{k}</b> : diminue le risque de {abs(v):.3f}</div>', unsafe_allow_html=True)
 
     with tab3:
         st.subheader("Analyse Comparative du Client")
