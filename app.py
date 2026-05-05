@@ -98,13 +98,15 @@ with st.sidebar:
 
     # Statut API
     try:
-        api_check = requests.get(f"{API_URL}/health", timeout=15)
+        api_check = requests.get(f"{API_URL}/health", timeout=30)
         if api_check.status_code == 200:
             st.success("✅ Système Connecté")
         else:
-            st.warning("⚠️ API Instable")
-    except:
+            st.warning(f"⚠️ API en cours de réveil (Code {api_check.status_code})")
+            st.info("L'API sur Render met environ 30s à démarrer. Veuillez rafraîchir la page dans un instant.")
+    except Exception as e:
         st.error("❌ API Hors-ligne")
+        st.caption(f"Erreur : {str(e)}")
     
     with st.expander("👤 Profil & Identité", expanded=not st.session_state.predicted):
         gender = st.selectbox("Genre (CODE_GENDER)", ["F", "M", "XNA"], format_func=lambda x: "Femme" if x=="F" else ("Homme" if x=="M" else "Non renseigné"))
