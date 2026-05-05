@@ -96,17 +96,25 @@ with st.sidebar:
         st.markdown('</div>', unsafe_allow_html=True)
         st.markdown("---")
 
-    # Statut API
-    try:
-        api_check = requests.get(f"{API_URL}/health", timeout=30)
-        if api_check.status_code == 200:
-            st.success("✅ Système Connecté")
-        else:
-            st.warning(f"⚠️ API en cours de réveil (Code {api_check.status_code})")
-            st.info("L'API sur Render met environ 30s à démarrer. Veuillez rafraîchir la page dans un instant.")
-    except Exception as e:
-        st.error("❌ API Hors-ligne")
-        st.caption(f"Erreur : {str(e)}")
+    # Statut API avec tentative de réveil automatique
+    api_ready = False
+    with st.spinner("Vérification de la connexion à l'API..."):
+        for i in range(3): # 3 tentatives
+            try:
+                api_check = requests.get(f"{API_URL}/health", timeout=15)
+                if api_check.status_code == 200:
+                    api_ready = True
+                    break
+            except:
+                pass
+            import time
+            time.sleep(10) # Attendre 10s entre chaque tentative
+            
+    if api_ready:
+        st.success("✅ Système Connecté")
+    else:
+        st.warning("⚠️ API en cours de réveil")
+        st.info("L'API Render se réveille doucement. Patientez 30s et rafraîchissez la page.")
     
     with st.expander("👤 Profil & Identité", expanded=not st.session_state.predicted):
         gender = st.selectbox("Genre (CODE_GENDER)", ["F", "M", "XNA"], format_func=lambda x: "Femme" if x=="F" else ("Homme" if x=="M" else "Non renseigné"))
