@@ -108,7 +108,6 @@ with st.sidebar:
             st.success("✅ Système Connecté")
         else:
             st.warning("⚠️ Connexion en cours...")
-            st.caption("L'API se réveille (Plan gratuit Render). Patientez 15s.")
     except:
         st.error("❌ API Hors-ligne")
     
