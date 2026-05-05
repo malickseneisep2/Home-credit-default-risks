@@ -96,20 +96,34 @@ with st.sidebar:
         st.markdown('</div>', unsafe_allow_html=True)
         st.markdown("---")
 
-    # --- ASTUCE DE RÉVEIL AUTOMATIQUE (Invisible) ---
-    # Cette ligne force le navigateur de l'utilisateur à contacter l'API pour la réveiller
+    # --- SYSTÈME DE CONNEXION AUTOMATIQUE ---
     import streamlit.components.v1 as components
+    import time
+    
+    # Réveil via le navigateur
     components.html(f'<iframe src="{API_URL}/health" style="display:none; width:0; height:0; border:none;"></iframe>', height=0)
 
-    # Vérification du statut de l'API
-    try:
-        api_check = requests.get(f"{API_URL}/health", timeout=20)
-        if api_check.status_code == 200:
-            st.success("✅ Système Connecté")
-        else:
-            st.warning("⚠️ Connexion en cours...")
-    except:
-        st.error("❌ API Hors-ligne")
+    status_placeholder = st.empty()
+    api_ready = False
+
+    # On tente de se connecter 3 fois (pendant ~15-20 secondes)
+    for i in range(3):
+        try:
+            api_check = requests.get(f"{API_URL}/health", timeout=10)
+            if api_check.status_code == 200:
+                api_ready = True
+                break
+        except:
+            pass
+        status_placeholder.warning(f"⚠️ Connexion en cours... (tentative {i+1}/3)")
+        time.sleep(5)
+
+    if api_ready:
+        status_placeholder.success("✅ Système Connecté")
+    else:
+        status_placeholder.error("❌ API Hors-ligne")
+        if st.button("🔄 Réessayer la connexion"):
+            st.rerun()
     
     with st.expander("👤 Profil & Identité", expanded=not st.session_state.predicted):
         gender = st.selectbox("Genre (CODE_GENDER)", ["F", "M", "XNA"], format_func=lambda x: "Femme" if x=="F" else ("Homme" if x=="M" else "Non renseigné"))
