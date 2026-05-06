@@ -15,9 +15,7 @@ st.set_page_config(
 )
 
 # --- CONFIGURATION DE L'API ---
-# Remplacez cette URL par votre URL Render une fois déployé
 API_URL = "https://home-credit-default-risks-1.onrender.com" 
-# API_URL = "http://127.0.0.1:8000" # Décommentez pour tester en local
 
 # --- INITIALISATION DU SESSION STATE ---
 if 'predicted' not in st.session_state:
