@@ -242,6 +242,7 @@ if st.session_state.predicted:
 
         # --- SYNTHÈSE NARRATIVE INTELLIGENTE ---
         st.markdown("### 📝 Synthèse de l'Analyse")
+
         def get_feature_value_label(feature_key, payload):
             """Retourne la valeur humainement lisible d'une variable du payload."""
             raw_key = feature_key.replace('num__', '').replace('cat__', '')
@@ -275,28 +276,28 @@ if st.session_state.predicted:
 
             if shap_value > 0:  # Facteur qui augmente le risque
                 if 'EXT_SOURCE' in raw:
-                    return f"un <b>{name}</b> faible{val_str}, signalant une fiabilité externe insuffisante"
+                    return f"un **{name}** faible{val_str}, signalant une fiabilité externe insuffisante"
                 elif 'DAYS_EMPLOYED' in raw:
-                    return f"une <b>{name}</b> très limitée{val_str}, indiquant une instabilité professionnelle"
+                    return f"une **{name}** très limitée{val_str}, indiquant une instabilité professionnelle"
                 elif 'INST_DPD' in raw:
-                    return f"des <b>{name}</b>{val_str}, révélant des difficultés passées de remboursement"
+                    return f"des **{name}**{val_str}, révélant des difficultés passées de remboursement"
                 elif 'AMT_CREDIT' in raw:
-                    return f"un <b>{name}</b> élevé{val_str}, augmentant l'exposition au risque"
+                    return f"un **{name}** élevé{val_str}, augmentant l'exposition au risque"
                 elif 'OWN_CAR_AGE' in raw:
-                    return f"un <b>{name}</b> avancé{val_str}"
+                    return f"un **{name}** avancé{val_str}"
                 else:
-                    return f"un niveau défavorable de <b>{name}</b>{val_str}"
+                    return f"un niveau défavorable de **{name}**{val_str}"
             else:  # Facteur qui diminue le risque
                 if 'EXT_SOURCE' in raw:
-                    return f"un <b>{name}</b> solide{val_str}, attestant d'une bonne réputation externe"
+                    return f"un **{name}** solide{val_str}, attestant d'une bonne réputation externe"
                 elif 'DAYS_EMPLOYED' in raw:
-                    return f"une <b>{name}</b> significative{val_str}, témoignant d'une stabilité professionnelle"
+                    return f"une **{name}** significative{val_str}, témoignant d'une stabilité professionnelle"
                 elif 'AMT_CREDIT' in raw:
-                    return f"un <b>{name}</b> raisonnable{val_str}, adapté au profil"
+                    return f"un **{name}** raisonnable{val_str}, adapté au profil"
                 elif 'INST_AMT_PAYMENT' in raw:
-                    return f"un <b>{name}</b> important{val_str}, démontrant une capacité de remboursement"
+                    return f"un **{name}** important{val_str}, démontrant une capacité de remboursement"
                 else:
-                    return f"un niveau favorable de <b>{name}</b>{val_str}"
+                    return f"un niveau favorable de **{name}**{val_str}"
 
         # Tri des facteurs par impact absolu
         all_sorted = sorted(shap_data.items(), key=lambda x: abs(x[1]), reverse=True)
@@ -314,9 +315,9 @@ if st.session_state.predicted:
 
         if decision == 1:
             main_sentence = (
-                f"Votre demande a été <b>refusée</b> principalement en raison de {interp1}, "
+                f"Votre demande a été **refusée** principalement en raison de {interp1}, "
                 f"ainsi que de {interp2}. "
-                f"Ces deux éléments représentent environ <b>{top2_contrib:.0f}%</b> de l'impact total sur votre score de risque."
+                f"Ces deux éléments représentent environ **{top2_contrib:.0f}%** de l'impact total sur votre score de risque."
             )
             protect_sentence = ""
             if protect_factors:
@@ -334,9 +335,9 @@ if st.session_state.predicted:
             """, unsafe_allow_html=True)
         else:
             main_sentence = (
-                f"Votre demande a été <b>accordée</b> grâce notamment à {interp1} "
+                f"Votre demande a été **accordée** grâce notamment à {interp1} "
                 f"et à {interp2}. "
-                f"Ces deux facteurs représentent environ <b>{top2_contrib:.0f}%</b> de l'impact favorable sur votre score."
+                f"Ces deux facteurs représentent environ **{top2_contrib:.0f}%** de l'impact favorable sur votre score."
             )
             vigilance = ""
             if risk_factors:
@@ -348,21 +349,6 @@ if st.session_state.predicted:
             <span style="font-size:1.1em;">✅</span> {full_text}
             </div>
             """, unsafe_allow_html=True)
-
-        # --- NOUVELLE SECTION : RECOMMANDATIONS ---
-        st.markdown("### 💡 Recommandations Stratégiques")
-        reco_text = ""
-        if decision == 1:
-            if "AMT_CREDIT" in f1 or "AMT_CREDIT" in f2:
-                reco_text = "Considérez de <b>réduire le montant du prêt</b> demandé ou d'augmenter votre apport personnel pour diminuer le risque."
-            elif "EXT_SOURCE" in f1 or "EXT_SOURCE" in f2:
-                reco_text = "Le dossier présente des faiblesses sur les scores externes. Nous recommandons de <b>fournir des garanties supplémentaires</b> ou de stabiliser votre situation financière avant une nouvelle demande."
-            else:
-                reco_text = "Pour améliorer l'éligibilité, il serait judicieux de <b>revoir la durée du crédit</b> pour alléger les mensualités."
-        else:
-            reco_text = "Dossier solide. Pour optimiser vos conditions, vous pourriez <b>maintenir ce niveau de garanties</b> et envisager une assurance emprunteur compétitive."
-
-        st.info(reco_text)
 
         col_plot, col_text = st.columns([1.2, 1])
         with col_plot:
@@ -382,6 +368,179 @@ if st.session_state.predicted:
             for k, v in pos: st.markdown(f'<div class="impact-box negative-impact">⬆️ <b>{clean_name(k)}</b> : augmente le risque de {v:.3f}</div>', unsafe_allow_html=True)
             st.markdown("**✅ Points Forts :**")
             for k, v in neg: st.markdown(f'<div class="impact-box positive-impact">⬇️ <b>{clean_name(k)}</b> : diminue le risque de {abs(v):.3f}</div>', unsafe_allow_html=True)
+
+        # --- BLOC DE RECOMMANDATIONS INTELLIGENT ---
+        st.markdown("---")
+        st.markdown("### 💡 Recommandations Personnalisées")
+
+        def generate_recommendations(risk_factors, protect_factors, all_sorted, decision, payload, proba, threshold):
+            """Génère une liste de recommandations ciblées selon le profil du dossier."""
+            recommendations = []
+
+            for feat, val in all_sorted:
+                raw = feat.replace('num__', '').replace('cat__', '')
+
+                # --- EXT_SOURCE : scores externes faibles ---
+                if 'EXT_SOURCE' in raw and val > 0:
+                    src_num = raw.split('EXT_SOURCE_')[-1] if 'EXT_SOURCE_' in raw else ''
+                    score_val = payload.get(f'EXT_SOURCE_{src_num}', None)
+                    if score_val is not None and score_val < 0.4:
+                        recommendations.append({
+                            "icon": "📈",
+                            "priority": "haute",
+                            "titre": "Améliorer le score de crédit externe",
+                            "detail": (
+                                f"Votre score externe (EXT_SOURCE_{src_num} = {score_val:.2f}) est en dessous du seuil de confiance (0.40). "
+                                f"Pour l'améliorer, régularisez vos éventuels incidents de paiement auprès des bureaux de crédit, "
+                                f"et évitez toute nouvelle demande de crédit dans les 6 prochains mois."
+                            )
+                        })
+
+                # --- DAYS_EMPLOYED : ancienneté insuffisante ---
+                elif 'DAYS_EMPLOYED' in raw and val > 0:
+                    months = round(abs(payload.get('DAYS_EMPLOYED', 0)) / 30)
+                    if months < 12:
+                        recommendations.append({
+                            "icon": "💼",
+                            "priority": "haute",
+                            "titre": "Renforcer la stabilité professionnelle",
+                            "detail": (
+                                f"Votre ancienneté actuelle de {months} mois est insuffisante. "
+                                f"Un minimum de 12 mois dans le même emploi est généralement requis. "
+                                f"Nous vous conseillons de soumettre à nouveau votre dossier après avoir atteint au moins 1 an d'ancienneté, "
+                                f"ou de fournir un contrat à durée indéterminée (CDI) comme justificatif de stabilité."
+                            )
+                        })
+
+                # --- INST_DPD : retards de paiement ---
+                elif 'INST_DPD' in raw and val > 0:
+                    dpd_val = payload.get('INST_DPD_LATE_MEAN', 0)
+                    if dpd_val > 0:
+                        recommendations.append({
+                            "icon": "⏱️",
+                            "priority": "haute",
+                            "titre": "Régulariser les retards de paiement",
+                            "detail": (
+                                f"Un retard moyen de {dpd_val:.1f} jours a été détecté sur vos paiements passés. "
+                                f"Régularisez tous les impayés en cours et maintenez un historique de paiement ponctuel "
+                                f"pendant au moins 6 mois consécutifs avant de soumettre une nouvelle demande."
+                            )
+                        })
+
+                # --- AMT_CREDIT trop élevé vs revenus ---
+                elif 'AMT_CREDIT' in raw and val > 0:
+                    amt = payload.get('AMT_CREDIT', 0)
+                    annuity = payload.get('AMT_ANNUITY', 0)
+                    ratio = annuity / amt if amt > 0 else 0
+                    if ratio > 0.06:
+                        recommendations.append({
+                            "icon": "💰",
+                            "priority": "moyenne",
+                            "titre": "Réduire le montant du crédit demandé",
+                            "detail": (
+                                f"Le ratio annuité/crédit de {ratio:.1%} dépasse le seuil recommandé de 6%. "
+                                f"Envisagez de réduire le montant du crédit de {amt:,.0f} FCFA ou d'allonger la durée de remboursement "
+                                f"pour abaisser les mensualités et améliorer votre taux d'effort."
+                            )
+                        })
+
+                # --- OWN_CAR_AGE ---
+                elif 'OWN_CAR_AGE' in raw and val > 0:
+                    age = payload.get('OWN_CAR_AGE', 0)
+                    if age > 10:
+                        recommendations.append({
+                            "icon": "🚗",
+                            "priority": "faible",
+                            "titre": "Mise à jour du patrimoine déclaré",
+                            "detail": (
+                                f"L'âge avancé du véhicule déclaré ({int(age)} ans) impacte légèrement votre évaluation. "
+                                f"Si vous disposez d'autres actifs récents (immobilier, épargne), veillez à les mentionner "
+                                f"explicitement dans votre dossier pour renforcer votre profil patrimonial."
+                            )
+                        })
+
+                # --- DAYS_ID_PUBLISH : documents anciens ---
+                elif 'DAYS_ID_PUBLISH' in raw and val > 0:
+                    years_id = round(abs(payload.get('DAYS_ID_PUBLISH', 0)) / 365, 1)
+                    if years_id > 5:
+                        recommendations.append({
+                            "icon": "📄",
+                            "priority": "faible",
+                            "titre": "Renouveler les documents d'identité",
+                            "detail": (
+                                f"Vos documents d'identité datent de {years_id} ans. "
+                                f"Des pièces récentes (moins de 5 ans) renforcent la crédibilité du dossier. "
+                                f"Pensez à les renouveler avant de soumettre une prochaine demande."
+                            )
+                        })
+
+            # Recommandation générique si peu de points actionnables
+            if not recommendations:
+                if decision == 1:
+                    recommendations.append({
+                        "icon": "🔄",
+                        "priority": "moyenne",
+                        "titre": "Constituer un dossier renforcé",
+                        "detail": (
+                            "Votre profil présente plusieurs facteurs combinés qui ont entraîné ce refus. "
+                            "Nous vous recommandons de consolider votre situation financière globale sur 6 à 12 mois "
+                            "(stabilité d'emploi, ponctualité des paiements, épargne constituée) puis de soumettre à nouveau votre dossier."
+                        )
+                    })
+                else:
+                    recommendations.append({
+                        "icon": "✨",
+                        "priority": "info",
+                        "titre": "Dossier solide — Maintenir les bonnes pratiques",
+                        "detail": (
+                            "Votre profil est bien équilibré. Pour conserver ce niveau de fiabilité, "
+                            "maintenez vos paiements à jour, évitez une accumulation de crédits simultanés, "
+                            "et conservez une épargne de précaution représentant au moins 3 mois de mensualités."
+                        )
+                    })
+
+            # Conseil final commun selon la proximité avec le seuil
+            gap = abs(proba - threshold)
+            if decision == 1 and gap < 0.05:
+                recommendations.append({
+                    "icon": "🎯",
+                    "priority": "info",
+                    "titre": "Dossier en limite de seuil",
+                    "detail": (
+                        f"Votre score ({proba:.2%}) est très proche du seuil d'acceptation ({threshold:.2%}). "
+                        f"Une amélioration ciblée sur 1 ou 2 des points mentionnés ci-dessus pourrait suffire "
+                        f"à faire basculer la décision lors d'une prochaine demande."
+                    )
+                })
+
+            return recommendations[:4]  # Maximum 4 recommandations affichées
+
+        # Couleurs et labels selon priorité
+        priority_style = {
+            "haute":   {"bg": "#fff5f5", "border": "#e53e3e", "badge_bg": "#e53e3e", "badge_text": "white",   "label": "Priorité haute"},
+            "moyenne": {"bg": "#fffaf0", "border": "#dd6b20", "badge_bg": "#dd6b20", "badge_text": "white",   "label": "Priorité moyenne"},
+            "faible":  {"bg": "#ebf8ff", "border": "#3182ce", "badge_bg": "#3182ce", "badge_text": "white",   "label": "Priorité faible"},
+            "info":    {"bg": "#f0fff4", "border": "#38a169", "badge_bg": "#38a169", "badge_text": "white",   "label": "Conseil"},
+        }
+
+        reco_list = generate_recommendations(risk_factors, protect_factors, all_sorted, decision, payload, proba, threshold)
+
+        for reco in reco_list:
+            s = priority_style.get(reco["priority"], priority_style["info"])
+            st.markdown(f"""
+            <div style="background-color:{s['bg']}; border-left:5px solid {s['border']}; border-radius:10px;
+                        padding:16px 20px; margin-bottom:12px; color:#2d3748; font-size:0.95em; line-height:1.7;">
+                <div style="display:flex; align-items:center; gap:10px; margin-bottom:6px;">
+                    <span style="font-size:1.3em;">{reco['icon']}</span>
+                    <strong style="font-size:1.02em;">{reco['titre']}</strong>
+                    <span style="margin-left:auto; background:{s['badge_bg']}; color:{s['badge_text']};
+                                 font-size:0.75em; font-weight:600; padding:2px 10px; border-radius:20px;">
+                        {s['label']}
+                    </span>
+                </div>
+                <div style="padding-left:2px; color:#4a5568;">{reco['detail']}</div>
+            </div>
+            """, unsafe_allow_html=True)
 
     with tab3:
         st.subheader("Analyse Comparative du Client")
