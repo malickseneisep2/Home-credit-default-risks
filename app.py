@@ -211,26 +211,67 @@ if st.session_state.predicted:
             else:
                 st.markdown(f'<div class="status-card refused-card"><h2>❌ REFUSÉ</h2><p>Risque élevé : {proba:.2%}</p></div>', unsafe_allow_html=True)
             st.metric("Seuil métier", f"{threshold:.3f}")
-            st.info("Le score est calculé sur la base de 20 variables de risque.")
+            st.info("Le score est calculé sur la base de 15 variables de risque.")
 
     with tab2:
         st.subheader("Analyse de Transparence (SHAP)")
+        
+        # Dictionnaire de traduction des variables techniques en noms clairs
+        friendly_names = {
+            'EXT_SOURCE': 'Score de fiabilité externe',
+            'AMT_GOODS_PRICE': 'Prix du bien immobilier',
+            'AMT_CREDIT': 'Montant du crédit demandé',
+            'AMT_ANNUITY': 'Montant des mensualités',
+            'DAYS_EMPLOYED': 'Ancienneté professionnelle',
+            'OWN_CAR_AGE': 'Âge du véhicule',
+            'ORGANIZATION_TYPE': 'Secteur d\'activité',
+            'DAYS_ID_PUBLISH': 'Ancienneté des documents',
+            'INST_DPD': 'Retards de paiement passés',
+            'INST_AMT_PAYMENT': 'Volume des paiements effectués',
+            'CNT_INSTALMENT_FUTURE': 'Mensualités restantes',
+            'DAYS_CREDIT': 'Historique bureau de crédit',
+            'CODE_GENDER': 'Genre du client',
+            'OCCUPATION_TYPE': 'Profession'
+        }
+
+        def clean_name(name):
+            n = name.replace('num__', '').replace('cat__', '')
+            for tech, clean in friendly_names.items():
+                if tech in n: return clean
+            return n
+
+        # Synthèse narrative intelligente
+        st.markdown("### 📝 Synthèse de l'Analyse")
+        top_factors = sorted(shap_data.items(), key=lambda x: abs(x[1]), reverse=True)[:2]
+        f1, v1 = top_factors[0]
+        f2, v2 = top_factors[1]
+        
+        reason1 = "contribue fortement à" if v1 > 0 else "sécurise"
+        reason2 = "aggrave le risque" if v2 > 0 else "améliore le dossier"
+        
+        if decision == 1:
+            st.warning(f"La demande est **Refusée** principalement à cause de : **{clean_name(f1)}** et **{clean_name(f2)}**.")
+        else:
+            st.success(f"La demande est **Accordée** grâce à la solidité de : **{clean_name(f1)}** et **{clean_name(f2)}**.")
+
         col_plot, col_text = st.columns([1.2, 1])
         with col_plot:
             sorted_shap = dict(sorted(shap_data.items(), key=lambda item: abs(item[1]), reverse=True))
-            top_10 = dict(list(sorted_shap.items())[:10])
+            top_10 = {clean_name(k): v for k, v in list(sorted_shap.items())[:10]}
             fig_s, ax = plt.subplots(figsize=(8, 6))
             ax.barh(list(top_10.keys()), list(top_10.values()), color=['#e53e3e' if v > 0 else '#38a169' for v in top_10.values()])
             ax.invert_yaxis()
+            ax.set_xlabel("Impact sur le score de risque")
             st.pyplot(fig_s)
+            
         with col_text:
-            st.markdown("### 🔍 Facteurs d'Influence")
+            st.markdown("### 🔍 Détails des Impacts")
             pos = [(k, v) for k, v in sorted_shap.items() if v > 0][:3]
             neg = [(k, v) for k, v in sorted_shap.items() if v < 0][:3]
-            st.markdown("**⚠️ Augmentent le risque :**")
-            for k, v in pos: st.markdown(f'<div class="impact-box negative-impact">⬆️ <b>{k}</b> : augmente le risque de {v:.3f}</div>', unsafe_allow_html=True)
-            st.markdown("**✅ Sécurisent le dossier :**")
-            for k, v in neg: st.markdown(f'<div class="impact-box positive-impact">⬇️ <b>{k}</b> : diminue le risque de {abs(v):.3f}</div>', unsafe_allow_html=True)
+            st.markdown("**⚠️ Facteurs de Risque :**")
+            for k, v in pos: st.markdown(f'<div class="impact-box negative-impact">⬆️ <b>{clean_name(k)}</b> : augmente le risque de {v:.3f}</div>', unsafe_allow_html=True)
+            st.markdown("**✅ Points Forts :**")
+            for k, v in neg: st.markdown(f'<div class="impact-box positive-impact">⬇️ <b>{clean_name(k)}</b> : diminue le risque de {abs(v):.3f}</div>', unsafe_allow_html=True)
 
     with tab3:
         st.subheader("Analyse Comparative du Client")
@@ -297,5 +338,5 @@ else:
     st.markdown("---")
     c_a, c_b, c_c = st.columns(3)
     c_a.metric("Modèle", "LightGBM")
-    c_b.metric("Variables", "20 indicateurs")
+    c_b.metric("Variables", "15 indicateurs")
     c_c.metric("Seuil", "0.673")
