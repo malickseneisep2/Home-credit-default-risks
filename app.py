@@ -276,28 +276,28 @@ if st.session_state.predicted:
 
             if shap_value > 0:  # Facteur qui augmente le risque
                 if 'EXT_SOURCE' in raw:
-                    return f"un **{name}** faible{val_str}, signalant une fiabilité externe insuffisante"
+                    return f"un <b>{name}</b> faible{val_str}, signalant une fiabilité externe insuffisante"
                 elif 'DAYS_EMPLOYED' in raw:
-                    return f"une **{name}** très limitée{val_str}, indiquant une instabilité professionnelle"
+                    return f"une <b>{name}</b> très limitée{val_str}, indiquant une instabilité professionnelle"
                 elif 'INST_DPD' in raw:
-                    return f"des **{name}**{val_str}, révélant des difficultés passées de remboursement"
+                    return f"des <b>{name}</b>{val_str}, révélant des difficultés passées de remboursement"
                 elif 'AMT_CREDIT' in raw:
-                    return f"un **{name}** élevé{val_str}, augmentant l'exposition au risque"
+                    return f"un <b>{name}</b> élevé{val_str}, augmentant l'exposition au risque"
                 elif 'OWN_CAR_AGE' in raw:
-                    return f"un **{name}** avancé{val_str}"
+                    return f"un <b>{name}</b> avancé{val_str}"
                 else:
-                    return f"un niveau défavorable de **{name}**{val_str}"
+                    return f"un niveau défavorable de <b>{name}</b>{val_str}"
             else:  # Facteur qui diminue le risque
                 if 'EXT_SOURCE' in raw:
-                    return f"un **{name}** solide{val_str}, attestant d'une bonne réputation externe"
+                    return f"un <b>{name}</b> solide{val_str}, attestant d'une bonne réputation externe"
                 elif 'DAYS_EMPLOYED' in raw:
-                    return f"une **{name}** significative{val_str}, témoignant d'une stabilité professionnelle"
+                    return f"une <b>{name}</b> significative{val_str}, témoignant d'une stabilité professionnelle"
                 elif 'AMT_CREDIT' in raw:
-                    return f"un **{name}** raisonnable{val_str}, adapté au profil"
+                    return f"un <b>{name}</b> raisonnable{val_str}, adapté au profil"
                 elif 'INST_AMT_PAYMENT' in raw:
-                    return f"un **{name}** important{val_str}, démontrant une capacité de remboursement"
+                    return f"un <b>{name}</b> important{val_str}, démontrant une capacité de remboursement"
                 else:
-                    return f"un niveau favorable de **{name}**{val_str}"
+                    return f"un niveau favorable de <b>{name}</b>{val_str}"
 
         # Tri des facteurs par impact absolu
         all_sorted = sorted(shap_data.items(), key=lambda x: abs(x[1]), reverse=True)
@@ -315,9 +315,9 @@ if st.session_state.predicted:
 
         if decision == 1:
             main_sentence = (
-                f"Votre demande a été **refusée** principalement en raison de {interp1}, "
+                f"Votre demande a été <b>refusée</b> principalement en raison de {interp1}, "
                 f"ainsi que de {interp2}. "
-                f"Ces deux éléments représentent environ **{top2_contrib:.0f}%** de l'impact total sur votre score de risque."
+                f"Ces deux éléments représentent environ <b>{top2_contrib:.0f}%</b> de l'impact total sur votre score de risque."
             )
             protect_sentence = ""
             if protect_factors:
@@ -335,9 +335,9 @@ if st.session_state.predicted:
             """, unsafe_allow_html=True)
         else:
             main_sentence = (
-                f"Votre demande a été **accordée** grâce notamment à {interp1} "
+                f"Votre demande a été <b>accordée</b> grâce notamment à {interp1} "
                 f"et à {interp2}. "
-                f"Ces deux facteurs représentent environ **{top2_contrib:.0f}%** de l'impact favorable sur votre score."
+                f"Ces deux facteurs représentent environ <b>{top2_contrib:.0f}%</b> de l'impact favorable sur votre score."
             )
             vigilance = ""
             if risk_factors:
