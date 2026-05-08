@@ -240,35 +240,114 @@ if st.session_state.predicted:
                 if tech in n: return clean
             return n
 
-        # Synthèse narrative intelligente
+        # --- SYNTHÈSE NARRATIVE INTELLIGENTE ---
         st.markdown("### 📝 Synthèse de l'Analyse")
-        
-        # Calcul des impacts principaux
-        top_factors = sorted(shap_data.items(), key=lambda x: abs(x[1]), reverse=True)
-        f1, v1 = top_factors[0]
-        f2, v2 = top_factors[1]
-        
-        # Récupération des valeurs réelles pour le texte
-        val1 = payload.get(f1.replace('num__', '').replace('cat__', ''), "N/A")
-        val2 = payload.get(f2.replace('num__', '').replace('cat__', ''), "N/A")
+        def get_feature_value_label(feature_key, payload):
+            """Retourne la valeur humainement lisible d'une variable du payload."""
+            raw_key = feature_key.replace('num__', '').replace('cat__', '')
+            for k in payload:
+                if k in raw_key or raw_key in k:
+                    val = payload[k]
+                    if 'EXT_SOURCE' in k:
+                        return f"{val:.2f} / 1.0"
+                    elif 'DAYS_EMPLOYED' in k:
+                        months = round(abs(val) / 30)
+                        return f"{months} mois"
+                    elif 'AMT_' in k:
+                        return f"{val:,.0f} FCFA"
+                    elif 'OWN_CAR_AGE' in k:
+                        return f"{int(val)} ans"
+                    elif 'DAYS_ID_PUBLISH' in k:
+                        years = round(abs(val) / 365, 1)
+                        return f"{years} ans"
+                    elif isinstance(val, float):
+                        return f"{val:.2f}"
+                    else:
+                        return str(val)
+            return None
 
-        # Texte de synthèse
+        def get_feature_interpretation(feature_key, shap_value, payload):
+            """Retourne une phrase d'interprétation contextualisée pour une variable."""
+            raw = feature_key.replace('num__', '').replace('cat__', '')
+            val_label = get_feature_value_label(feature_key, payload)
+            name = clean_name(feature_key)
+            val_str = f" ({val_label})" if val_label else ""
+
+            if shap_value > 0:  # Facteur qui augmente le risque
+                if 'EXT_SOURCE' in raw:
+                    return f"un <b>{name}</b> faible{val_str}, signalant une fiabilité externe insuffisante"
+                elif 'DAYS_EMPLOYED' in raw:
+                    return f"une <b>{name}</b> très limitée{val_str}, indiquant une instabilité professionnelle"
+                elif 'INST_DPD' in raw:
+                    return f"des <b>{name}</b>{val_str}, révélant des difficultés passées de remboursement"
+                elif 'AMT_CREDIT' in raw:
+                    return f"un <b>{name}</b> élevé{val_str}, augmentant l'exposition au risque"
+                elif 'OWN_CAR_AGE' in raw:
+                    return f"un <b>{name}</b> avancé{val_str}"
+                else:
+                    return f"un niveau défavorable de <b>{name}</b>{val_str}"
+            else:  # Facteur qui diminue le risque
+                if 'EXT_SOURCE' in raw:
+                    return f"un <b>{name}</b> solide{val_str}, attestant d'une bonne réputation externe"
+                elif 'DAYS_EMPLOYED' in raw:
+                    return f"une <b>{name}</b> significative{val_str}, témoignant d'une stabilité professionnelle"
+                elif 'AMT_CREDIT' in raw:
+                    return f"un <b>{name}</b> raisonnable{val_str}, adapté au profil"
+                elif 'INST_AMT_PAYMENT' in raw:
+                    return f"un <b>{name}</b> important{val_str}, démontrant une capacité de remboursement"
+                else:
+                    return f"un niveau favorable de <b>{name}</b>{val_str}"
+
+        # Tri des facteurs par impact absolu
+        all_sorted = sorted(shap_data.items(), key=lambda x: abs(x[1]), reverse=True)
+        risk_factors = [(k, v) for k, v in all_sorted if v > 0][:3]
+        protect_factors = [(k, v) for k, v in all_sorted if v < 0][:3]
+
+        # Contribution relative des 2 premiers facteurs
+        total_abs = sum(abs(v) for _, v in all_sorted) or 1
+        top2_contrib = sum(abs(v) for _, v in all_sorted[:2]) / total_abs * 100
+
+        f1, v1 = all_sorted[0]
+        f2, v2 = all_sorted[1]
+        interp1 = get_feature_interpretation(f1, v1, payload)
+        interp2 = get_feature_interpretation(f2, v2, payload)
+
         if decision == 1:
-            intro = f"Votre demande a été <b>refusée</b> principalement en raison d'un <b>{clean_name(f1)}</b> défavorable ({val1}), ainsi que d'un <b>{clean_name(f2)}</b> qui pèse sur le dossier."
-            color = "#fff5f5"
-            border = "#feb2b2"
-            icon = "❌"
-        else:
-            intro = f"Votre demande a été <b>accordée</b> grâce à la solidité de votre <b>{clean_name(f1)}</b> ({val1}) et de votre <b>{clean_name(f2)}</b>."
-            color = "#f0fff4"
-            border = "#9ae6b4"
-            icon = "✅"
-
-        st.markdown(f"""
-            <div style="padding: 20px; background-color: {color}; border: 1px solid {border}; border-radius: 10px; color: #2d3748;">
-                <span style="font-size: 1.5em; margin-right: 10px;">{icon}</span> {intro}
+            main_sentence = (
+                f"Votre demande a été <b>refusée</b> principalement en raison de {interp1}, "
+                f"ainsi que de {interp2}. "
+                f"Ces deux éléments représentent environ <b>{top2_contrib:.0f}%</b> de l'impact total sur votre score de risque."
+            )
+            protect_sentence = ""
+            if protect_factors:
+                p1, pv1 = protect_factors[0]
+                protect_sentence = f" À noter cependant, {get_feature_interpretation(p1, pv1, payload)} constitue un point positif de votre dossier."
+            extra = ""
+            if len(risk_factors) >= 3:
+                r3, rv3 = risk_factors[2]
+                extra = f" De plus, {get_feature_interpretation(r3, rv3, payload)} pèse également sur la décision."
+            full_text = f"{main_sentence}{extra}{protect_sentence}".strip()
+            st.markdown(f"""
+            <div style="background-color:#fff5f5; border-left:5px solid #e53e3e; border-radius:10px; padding:18px 22px; margin-bottom:15px; color:#2d3748; font-size:0.97em; line-height:1.7;">
+            <span style="font-size:1.1em;">❌</span> {full_text}
             </div>
-        """, unsafe_allow_html=True)
+            """, unsafe_allow_html=True)
+        else:
+            main_sentence = (
+                f"Votre demande a été <b>accordée</b> grâce notamment à {interp1} "
+                f"et à {interp2}. "
+                f"Ces deux facteurs représentent environ <b>{top2_contrib:.0f}%</b> de l'impact favorable sur votre score."
+            )
+            vigilance = ""
+            if risk_factors:
+                r1_key, r1_val = risk_factors[0]
+                vigilance = f" Toutefois, restez vigilant : {get_feature_interpretation(r1_key, r1_val, payload)} reste un point de surveillance."
+            full_text = f"{main_sentence}{vigilance}".strip()
+            st.markdown(f"""
+            <div style="background-color:#f0fff4; border-left:5px solid #38a169; border-radius:10px; padding:18px 22px; margin-bottom:15px; color:#2d3748; font-size:0.97em; line-height:1.7;">
+            <span style="font-size:1.1em;">✅</span> {full_text}
+            </div>
+            """, unsafe_allow_html=True)
 
         # --- NOUVELLE SECTION : RECOMMANDATIONS ---
         st.markdown("### 💡 Recommandations Stratégiques")
