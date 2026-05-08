@@ -242,17 +242,48 @@ if st.session_state.predicted:
 
         # Synthèse narrative intelligente
         st.markdown("### 📝 Synthèse de l'Analyse")
-        top_factors = sorted(shap_data.items(), key=lambda x: abs(x[1]), reverse=True)[:2]
+        
+        # Calcul des impacts principaux
+        top_factors = sorted(shap_data.items(), key=lambda x: abs(x[1]), reverse=True)
         f1, v1 = top_factors[0]
         f2, v2 = top_factors[1]
         
-        reason1 = "contribue fortement à" if v1 > 0 else "sécurise"
-        reason2 = "aggrave le risque" if v2 > 0 else "améliore le dossier"
-        
+        # Récupération des valeurs réelles pour le texte
+        val1 = payload.get(f1.replace('num__', '').replace('cat__', ''), "N/A")
+        val2 = payload.get(f2.replace('num__', '').replace('cat__', ''), "N/A")
+
+        # Texte de synthèse
         if decision == 1:
-            st.warning(f"La demande est **Refusée** principalement à cause de : **{clean_name(f1)}** et **{clean_name(f2)}**.")
+            intro = f"Votre demande a été <b>refusée</b> principalement en raison d'un <b>{clean_name(f1)}</b> défavorable ({val1}), ainsi que d'un <b>{clean_name(f2)}</b> qui pèse sur le dossier."
+            color = "#fff5f5"
+            border = "#feb2b2"
+            icon = "❌"
         else:
-            st.success(f"La demande est **Accordée** grâce à la solidité de : **{clean_name(f1)}** et **{clean_name(f2)}**.")
+            intro = f"Votre demande a été <b>accordée</b> grâce à la solidité de votre <b>{clean_name(f1)}</b> ({val1}) et de votre <b>{clean_name(f2)}</b>."
+            color = "#f0fff4"
+            border = "#9ae6b4"
+            icon = "✅"
+
+        st.markdown(f"""
+            <div style="padding: 20px; background-color: {color}; border: 1px solid {border}; border-radius: 10px; color: #2d3748;">
+                <span style="font-size: 1.5em; margin-right: 10px;">{icon}</span> {intro}
+            </div>
+        """, unsafe_allow_html=True)
+
+        # --- NOUVELLE SECTION : RECOMMANDATIONS ---
+        st.markdown("### 💡 Recommandations Stratégiques")
+        reco_text = ""
+        if decision == 1:
+            if "AMT_CREDIT" in f1 or "AMT_CREDIT" in f2:
+                reco_text = "Considérez de <b>réduire le montant du prêt</b> demandé ou d'augmenter votre apport personnel pour diminuer le risque."
+            elif "EXT_SOURCE" in f1 or "EXT_SOURCE" in f2:
+                reco_text = "Le dossier présente des faiblesses sur les scores externes. Nous recommandons de <b>fournir des garanties supplémentaires</b> ou de stabiliser votre situation financière avant une nouvelle demande."
+            else:
+                reco_text = "Pour améliorer l'éligibilité, il serait judicieux de <b>revoir la durée du crédit</b> pour alléger les mensualités."
+        else:
+            reco_text = "Dossier solide. Pour optimiser vos conditions, vous pourriez <b>maintenir ce niveau de garanties</b> et envisager une assurance emprunteur compétitive."
+
+        st.info(reco_text)
 
         col_plot, col_text = st.columns([1.2, 1])
         with col_plot:
