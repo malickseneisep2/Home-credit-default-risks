@@ -120,7 +120,7 @@ async def predict(application: CreditApplication):
         # Proba
         proba = classifier.predict_proba(X_transformed)[0, 1]
         
-        # --- SHAP (Restauré) ---
+        # --- SHAP ---
         explainer = shap.TreeExplainer(classifier)
         shap_values = explainer.shap_values(X_transformed, check_additivity=False)
         
