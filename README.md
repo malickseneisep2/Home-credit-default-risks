@@ -3,6 +3,7 @@
 [![Python CI](https://github.com/malickseneisep2/Home-credit-default-risks/actions/workflows/main.yml/badge.svg)](https://github.com/malickseneisep2/Home-credit-default-risks/actions/workflows/main.yml)
 [![FastAPI](https://img.shields.io/badge/API-FastAPI-009688?logo=fastapi)](https://home-credit-default-risks-1.onrender.com)
 [![Streamlit](https://img.shields.io/badge/Dashboard-Streamlit-FF4B4B?logo=streamlit)](https://credit-scoring-dashboard.onrender.com)
+[![Canva](https://img.shields.io/badge/Présentation-Canva-00C4CC?logo=canva)](VOTRE_LIEN_CANVA_ICI)
 
 Ce projet propose une solution complète de scoring crédit pour **Home Credit**, permettant de prédire la probabilité de défaut de paiement d'un client et d'expliquer la décision de manière transparente pour les conseillers bancaires.
 
@@ -25,11 +26,15 @@ Ce projet propose une solution complète de scoring crédit pour **Home Credit**
 L'objectif est de développer un algorithme de classification pour aider les décideurs financiers à accorder ou refuser un prêt. Le système ne se contente pas d'une prédiction brute, il fournit une **interprétabilité locale (SHAP)** pour justifier chaque décision, garantissant une éthique et une transparence bancaire.
 
 ## 2. Équipe
-Ce projet a été réalisé par une équipe de 4 personnes :
-*   **Membre 1** ([GitHub](https://github.com/)) - *Rôle / Spécialité*
-*   **Membre 2** ([GitHub](https://github.com/)) - *Rôle / Spécialité*
-*   **Membre 3** ([GitHub](https://github.com/)) - *Rôle / Spécialité*
-*   **Membre 4** ([GitHub](https://github.com/)) - *Rôle / Spécialité*
+Ce projet a été réalisé par :
+
+| Collaborateur | GitHub |
+| :--- | :--- |
+| **Malick SENE** | [@malickseneisep2](https://github.com/malickseneisep2) |
+| **Ameth FAYE** | [@ameth08faye](https://github.com/ameth08faye) |
+| **Hildegarde Edima BIYENDA** | [@HildaEDIMA](https://github.com/HildaEDIMA) |
+| **Albert ZINABA** | [@ZINABA-Albert](https://github.com/ZINABA-Albert) |
+| **Jean Luc BATABATI** | [@Luck-John](https://github.com/Luck-John) |
 
 ## 3. Structure du Projet
 ```text
