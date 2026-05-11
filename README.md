@@ -3,9 +3,9 @@
 [![Python CI](https://github.com/malickseneisep2/Home-credit-default-risks/actions/workflows/main.yml/badge.svg)](https://github.com/malickseneisep2/Home-credit-default-risks/actions/workflows/main.yml)
 [![FastAPI](https://img.shields.io/badge/API-FastAPI-009688?logo=fastapi)](https://home-credit-default-risks-1.onrender.com)
 [![Streamlit](https://img.shields.io/badge/Dashboard-Streamlit-FF4B4B?logo=streamlit)](https://credit-scoring-dashboard.onrender.com)
-[![Canva](https://img.shields.io/badge/Présentation-Canva-00C4CC?logo=canva)](VOTRE_LIEN_CANVA_ICI)
+[![Canva](https://img.shields.io/badge/Présentation-Canva-00C4CC?logo=canva)](https://www.canva.com/design/DAHJEALQJkc/E4Vh3QfgbcbISXaA9e0x_Q/edit)
 
-Ce projet propose une solution complète de scoring crédit pour **Home Credit**, permettant de prédire la probabilité de défaut de paiement d'un client et d'expliquer la décision de manière transparente pour les conseillers bancaires.
+Ce projet propose une solution de scoring crédit pour **Home Credit**, permettant de prédire la probabilité de défaut de paiement d'un client et d'expliquer la décision de manière transparente pour les conseillers bancaires.
 
 ## 📖 Table des matières
 1. [Objectif](#1-objectif)
@@ -31,10 +31,9 @@ Ce projet a été réalisé par :
 | Collaborateur | GitHub |
 | :--- | :--- |
 | **Malick SENE** | [@malickseneisep2](https://github.com/malickseneisep2) |
-| **Ameth FAYE** | [@ameth08faye](https://github.com/ameth08faye) |
-| **Hildegarde Edima BIYENDA** | [@HildaEDIMA](https://github.com/HildaEDIMA) |
-| **Albert ZINABA** | [@ZINABA-Albert](https://github.com/ZINABA-Albert) |
-| **Jean Luc BATABATI** | [@Luck-John](https://github.com/Luck-John) |
+| **Mamady I BERETE** | [@ameth08faye](https://github.com/Kefimba) |
+| **Célina NGUEMFOUO NGOUMTSA** | [@HildaEDIMA](https://github.com/nncelina) |
+| **Tamsir NDONG** | [@ZINABA-Albert](https://github.com/tamsir03) |
 
 ## 3. Structure du Projet
 ```text
@@ -76,17 +75,18 @@ Pour installer et lancer le projet localement :
    ```
 
 ## 5. Méthodologie
-Nous avons suivi une approche MLOps rigoureuse :
-*   Nettoyage des données et Feature Engineering complexe.
-*   Gestion du déséquilibre des classes (SMOTE / Weight balancing).
-*   Optimisation des hyperparamètres avec recherche bayésienne.
+Nous avons suivi une l'approche :
+*   Nettoyage des données et Feature Engineering.
+*   Gestion du déséquilibre des classes (SMOTE / Weight balancing/ resampling).
+*   Optimisation des hyperparamètres.
 *   Industrialisation via une architecture API/Client découplée.
 
 ## 6. Données
-Les données proviennent de la compétition Kaggle **Home Credit Default Risk**. Elles incluent l'historique de crédit, les données démographiques et les comportements de paiement des demandeurs. Nous avons réduit le dataset à **15 variables clés** pour optimiser l'interprétabilité et les performances en production.
+Les données proviennent du dataset Home Credit Default Risk, disponible sur la plateforme Kaggle combinant des données socio-économiques, des informations financières, l’historique de crédits, les comportements de remboursement, ainsi que des données provenant d’autres institutions financières.
+Le dataset est organisé sous forme de 08 tables relationnelles reliées entre elles grâce à un identifiant client unique (SK_ID_CURR). 
 
 ## 7. Modèle
-L'algorithme utilisé est un **LightGBM Classifier**, choisi pour sa rapidité et sa performance sur les données tabulaires.
+L'algorithme utilisé est un **LightGBM Classifier**, choisi pour sa performance sur les données.
 *   **Seuil de décision métier** : 0.673 (optimisé pour minimiser le coût métier).
 *   **Performance** : Évaluée via l'AUC et une fonction de coût métier personnalisée.
 
@@ -98,7 +98,7 @@ L'algorithme utilisé est un **LightGBM Classifier**, choisi pour sa rapidité e
 Une fois sur le Dashboard :
 1. Renseignez les informations du client dans la barre latérale.
 2. Cliquez sur "Analyser le risque".
-3. Consultez la décision, le score et la synthèse narrative de l'IA.
+3. Consultez la décision, le score et la synthèse narrative de l'explication de la décision.
 
 ## 10. Tests et CI/CD
 Le projet intègre une suite de tests avec **Pytest** couvrant :
