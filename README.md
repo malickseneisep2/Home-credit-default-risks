@@ -31,9 +31,9 @@ Ce projet a été réalisé par :
 | Collaborateur | GitHub |
 | :--- | :--- |
 | **Malick SENE** | [@malickseneisep2](https://github.com/malickseneisep2) |
-| **Mamady I BERETE** | [@ameth08faye](https://github.com/Kefimba) |
-| **Célina NGUEMFOUO NGOUMTSA** | [@HildaEDIMA](https://github.com/nncelina) |
-| **Tamsir NDONG** | [@ZINABA-Albert](https://github.com/tamsir03) |
+| **Mamady I BERETE** | [@Kefimba](https://github.com/Kefimba) |
+| **Célina NGUEMFOUO NGOUMTSA** | [@nncelina](https://github.com/nncelina) |
+| **Tamsir NDONG** | [@tamsir03](https://github.com/tamsir03) |
 
 ## 3. Structure du Projet
 ```text
