@@ -31,10 +31,9 @@ Ce projet a été réalisé par :
 | Collaborateur | GitHub |
 | :--- | :--- |
 | **Malick SENE** | [@malickseneisep2](https://github.com/malickseneisep2) |
-| **Ameth FAYE** | [@ameth08faye](https://github.com/ameth08faye) |
-| **Hildegarde Edima BIYENDA** | [@HildaEDIMA](https://github.com/HildaEDIMA) |
-| **Albert ZINABA** | [@ZINABA-Albert](https://github.com/ZINABA-Albert) |
-| **Jean Luc BATABATI** | [@Luck-John](https://github.com/Luck-John) |
+| **Mamady I BERETE** | [@Kefimba](https://github.com/Kefimba) |
+| **Célina NGUEMFOUO NGOUMTSA** | [@nncelina](https://github.com/nncelina) |
+| **Tamsir NDONG** | [@tamsir03](https://github.com/tamsir03) |
 
 ## 3. Structure du Projet
 ```text
